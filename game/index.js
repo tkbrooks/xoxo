@@ -1,15 +1,23 @@
-import {Map} from 'immutable'
-import { createStore } from 'redux'
+import { Map } from 'immutable';
+import { createStore } from 'redux';
 
 const initialState = {
   board: Map(),
-  turn: "X"
-}
+  turn: 'X'
+};
 
-const move = () => reducer.dispatch({type: "MOVE", position: [row: 0, col: 0]})
+const MOVE = 'MOVE';
 
-export default function reducer(state = initialState, action) {
-  // TODO
+export const move = (turn, position) => {
+  return { type: MOVE, position };
+};
 
-  return state
+export default function gameReducer(state = initialState, action) {
+  if (action.type === MOVE) {
+    state.board = state.board.setIn(action.position, state.turn);
+    state.turn === 'X'
+      ? (state.turn = 'O')
+      : (state.turn = 'X');
+  }
+  return state;
 }
