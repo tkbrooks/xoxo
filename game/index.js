@@ -37,20 +37,26 @@ function streak(board, coord1, coord2, coord3) {
 }
 
 export const move = (turn, position) => {
-  return { type: MOVE, position };
+  return { type: MOVE, position, turn };
 };
-
-export default function gameReducer(state = initialState, action) {
+function turnReducer(turn = 'X', action) {
   if (action.type === MOVE) {
-    state.board = state.board.setIn(action.position, state.turn);
-    state.turn === 'X'
-      ? (state.turn = 'O')
-      : (state.turn = 'X');
-    console.log(winner(state.board, action.position))
+    return turn === 'X' ? 'O' : 'X';
   }
-  return state;
+  return turn
+}
+function boardReducer(board = Map(), action) {
+  if (action.type === MOVE) {
+    return board.setIn(action.position, action.turn);
+  }
+  return board
 }
 
-// 000
-// 000
-// 000
+export default function gameReducer(state = initialState, action) {
+  const newTurn = turnReducer(state.turn, action)
+  const newBoard = boardReducer(state.board, action)
+  if(action.type === 'MOVE'){
+    console.log(winner(newBoard, action.position))
+  }
+  return {board: newBoard, turn: newTurn};
+}
